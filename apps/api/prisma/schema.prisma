@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum PromptStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum VarType {
+  STRING
+  NUMBER
+  BOOLEAN
+  JSON
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Prompt {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  ownerTeam   String?
+  status      PromptStatus  @default(ACTIVE)
+  deletedAt   DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  versions      PromptVersion[]
+  tags          PromptTag[]
+  publications  PromptPublication[]
+
+  @@index([name])
+}
+
+model PromptVersion {
+  id           String   @id @default(cuid())
+  promptId     String
+  version      Int
+  content      String
+  modelName    String?
+  temperature  Float?
+  maxTokens    Int?
+  topP         Float?
+  notes        String?
+  createdBy    String?
+  createdAt    DateTime @default(now())
+
+  prompt        Prompt @relation(fields: [promptId], references: [id])
+  variables     PromptVariable[]
+  publications  PromptPublication[]
+
+  @@unique([promptId, version])
+  @@index([promptId])
+}
+
+model PromptVariable {
+  id             String   @id @default(cuid())
+  promptVersionId String
+  name           String
+  type           VarType
+  required       Boolean  @default(false)
+  defaultValue   String?
+
+  promptVersion PromptVersion @relation(fields: [promptVersionId], references: [id])
+
+  @@unique([promptVersionId, name])
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  prompts PromptTag[]
+}
+
+model PromptTag {
+  promptId String
+  tagId    String
+
+  prompt Prompt @relation(fields: [promptId], references: [id])
+  tag    Tag    @relation(fields: [tagId], references: [id])
+
+  @@id([promptId, tagId])
+}
+
+model Environment {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  name      String
+  createdAt DateTime @default(now())
+
+  publications PromptPublication[]
+}
+
+model PromptPublication {
+  id             String   @id @default(cuid())
+  promptId       String
+  environmentId  String
+  promptVersionId String
+  publishedBy    String?
+  publishedAt    DateTime @default(now())
+  notes          String?
+
+  prompt       Prompt       @relation(fields: [promptId], references: [id])
+  environment  Environment  @relation(fields: [environmentId], references: [id])
+  promptVersion PromptVersion @relation(fields: [promptVersionId], references: [id])
+
+  @@index([promptId, environmentId])
+}

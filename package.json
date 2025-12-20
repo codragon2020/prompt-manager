@@ -1,0 +1,20 @@
+{
+	"name": "prompt-manager",
+	"private": true,
+	"version": "0.1.0",
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"dev": "concurrently -n api,web -c blue,green \"npm:dev -w apps/api\" \"npm:dev -w apps/web\"",
+		"build": "npm run build -w apps/api && npm run build -w apps/web",
+		"lint": "npm run lint -w apps/api && npm run lint -w apps/web",
+		"format": "prettier -w .",
+		"test": "npm run test -w apps/api && npm run test -w apps/web"
+	},
+	"devDependencies": {
+		"concurrently": "^9.1.0",
+		"prettier": "^3.4.2"
+	}
+}

@@ -1,0 +1,130 @@
+You are a senior full-stack engineer. Build a complete Prompt Management System with:
+- Frontend: React + TypeScript (Vite) + React Router + a simple component library (or minimal CSS)
+- Backend: Node.js + TypeScript + Express
+- Database: SQLite (file-based) using an ORM (prefer Prisma; if not, use better-sqlite3 or knex)
+- Monorepo structure with two apps: /apps/web and /apps/api (and /packages/shared if helpful)
+- Local-first dev: one-command start, seeded data, and clear README.
+
+GOALS
+1) CRUD prompts with strong versioning and auditability.
+2) Easy local running, reliable APIs, clean data model.
+3) Practical: search, tags, environments, and deployment-ready patterns (but local SQLite).
+
+CORE DOMAIN
+A “Prompt” is not just text; it’s a managed artifact.
+Implement:
+- Prompt (logical identity) and PromptVersion (immutable versions)
+- Tagging
+- Environments (dev/stage/prod) + “published” pointer per environment
+- Variables/schema (placeholders), plus validation helpers
+- Test runs/logs (optional but recommended)
+
+REQUIRED FEATURES
+A) Prompt Library
+- List prompts with filters: search by name/description/text, tag filter, environment filter, sort by updated time
+- Create new prompt with initial version
+- Edit prompt metadata (name, description, owner/team, status)
+- Delete prompt (soft delete)
+
+B) Versioning
+- Create a new version from an existing version (fork/clone)
+- Each version includes:
+  - content (prompt text)
+  - model hints (model name, temperature, max tokens, top_p)
+  - variables definition (JSON schema or simple {name,type,required,default})
+  - notes/changelog
+  - created_by + created_at
+- Compare versions (diff view) in UI
+
+C) Publishing
+- Environment table: dev, stage, prod
+- Publish a specific PromptVersion to an environment with:
+  - published_by, published_at
+  - optional “release notes”
+- The “active” version for an environment must be queryable via API:
+  GET /api/prompts/:promptId/active?env=prod
+
+D) Import/Export
+- Export a prompt (all versions + metadata) as JSON
+- Import JSON to create or merge prompts
+
+E) Auth (simple but real)
+- Use a simple local auth approach:
+  Option 1: single admin password in .env + signed JWT
+  Option 2: local users table (email + password hash) + JWT
+- Protect write endpoints; read endpoints can be public or protected (choose one and document)
+
+F) UX
+- Clean screens:
+  1) Prompt list
+  2) Prompt detail with versions table + publish status per environment
+  3) Version editor (create new version, edit draft fields, save)
+  4) Compare versions (diff)
+  5) Import/Export page
+- Provide a “Render Preview” panel where user supplies variable values and sees the rendered prompt (string interpolation) with missing variable warnings.
+
+API REQUIREMENTS
+- REST endpoints, request/response examples, pagination, and validation
+- Use Zod (or similar) for request validation
+- Consistent error format: { error: { code, message, details? } }
+- Basic rate limiting and CORS for local dev
+- OpenAPI spec (or at minimum a well-structured route list in README)
+
+DATA MODEL (minimum)
+- users (optional)
+- prompts
+- prompt_versions
+- tags
+- prompt_tags (join)
+- environments
+- prompt_publications (prompt_id, env_id, prompt_version_id, published_by, published_at, notes)
+- prompt_runs (optional): records of test rendering/executions (inputs/outputs, model used, latency, etc.)
+
+DATABASE
+- Provide schema migrations (Prisma migrations or SQL)
+- Provide seed script with a few prompts and versions
+
+ENGINEERING QUALITY BAR
+- Type safety end-to-end (shared types where reasonable)
+- Separation of concerns: routes/controllers/services/db
+- Logging (pino or console with structure)
+- Tests:
+  - backend unit tests for services + API smoke tests (vitest/jest + supertest)
+  - frontend minimal tests (optional)
+- Security basics: password hashing (bcrypt), JWT secret, no secrets in code
+- Input sanitization for search queries and robust error handling
+- Linting/formatting (eslint + prettier)
+
+DELIVERABLES
+1) A full monorepo codebase output as a file tree + contents of all key files.
+2) Step-by-step setup instructions:
+   - prerequisites
+   - install
+   - migrate DB
+   - seed DB
+   - run API
+   - run web
+3) Example curl commands for key flows:
+   - create prompt, create version, publish to prod, export, import
+4) Include .env.example files for web and api
+
+IMPLEMENTATION DETAILS (choose sensible defaults)
+- Frontend calls backend at http://localhost:3001
+- Backend runs at http://localhost:3001, frontend at http://localhost:5173
+- Use SQLite file at apps/api/prisma/dev.db (or similar)
+- Provide a dev proxy or CORS config
+
+OUTPUT FORMAT
+- Start with a concise architecture summary
+- Then show the repo file tree
+- Then provide code file-by-file (grouped by app)
+- Keep code complete, runnable, and consistent
+- Do not omit “boring” glue code if required to run
+- If something is optional, implement it anyway unless it’s huge
+
+IMPORTANT CONSTRAINTS
+- Do not use external paid services.
+- Do not assume Docker is available.
+- Keep it production-lean, but runnable locally in under 10 minutes.
+
+Now generate the project.
