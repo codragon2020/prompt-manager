@@ -39,6 +39,10 @@ export type PromptDetailResponse = {
 
 const TOKEN_KEY = 'pm_token';
 
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL as
+  | string
+  | undefined;
+
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
 }
@@ -54,7 +58,11 @@ export function setToken(token: string | null) {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const token = getToken();
 
-  const res = await fetch(path, {
+  const url = API_BASE_URL
+    ? `${API_BASE_URL.replace(/\/$/, '')}${path.startsWith('/') ? '' : '/'}${path}`
+    : path;
+
+  const res = await fetch(url, {
     ...init,
     headers: {
       'content-type': 'application/json',

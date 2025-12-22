@@ -24,12 +24,12 @@ export async function listPrompts(params: {
     const q = params.q.trim();
     if (q.length > 0) {
       where.OR = [
-        { name: { contains: q, mode: 'insensitive' } },
-        { description: { contains: q, mode: 'insensitive' } },
+        { name: { contains: q } },
+        { description: { contains: q } },
         {
           versions: {
             some: {
-              content: { contains: q, mode: 'insensitive' },
+              content: { contains: q },
             },
           },
         },
@@ -394,7 +394,7 @@ export async function createPromptVersion(
         data: vars.map((vv) => ({
           promptVersionId: v.id,
           name: vv.name,
-          type: VarType[(vv as any).type] ?? (vv as any).type,
+          type: (vv as any).type as VarType,
           required: vv.required,
           defaultValue: (vv as any).defaultValue,
         })),

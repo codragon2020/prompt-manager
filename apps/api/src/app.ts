@@ -10,11 +10,16 @@ import { toAppError } from './errors';
 export function createApp() {
   const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
+  const corsOrigin = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   const app = express();
 
   app.use(
     cors({
-      origin: ['http://localhost:5173'],
+      origin: corsOrigin,
       credentials: true,
     }),
   );
