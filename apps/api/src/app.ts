@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
-import { apiRouter } from './routes';
+import { apiRouter } from './routes/index.js';
 import { toAppError } from './errors';
 
 export function createApp() {
