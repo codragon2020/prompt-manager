@@ -1,7 +1,7 @@
 You are a senior full-stack engineer. Build a complete Prompt Management System with:
 - Frontend: React + TypeScript (Vite) + React Router + a simple component library (or minimal CSS)
 - Backend: Node.js + TypeScript + Express
-- Database: SQLite (file-based) using an ORM (prefer Prisma; if not, use better-sqlite3 or knex)
+- Database: Postgres (Supabase) using Prisma ORM
 - Monorepo structure with two apps: /apps/web and /apps/api (and /packages/shared if helpful)
 - Local-first dev: one-command start, seeded data, and clear README.
 
@@ -9,6 +9,8 @@ GOALS
 1) CRUD prompts with strong versioning and auditability.
 2) Easy local running, reliable APIs, clean data model.
 3) Practical: search, tags, environments, and deployment-ready patterns (but local SQLite).
+
+NOTE: Prefer deployment-ready patterns for Vercel serverless + Supabase Postgres.
 
 CORE DOMAIN
 A “Prompt” is not just text; it’s a managed artifact.
@@ -84,6 +86,15 @@ DATABASE
 - Provide schema migrations (Prisma migrations or SQL)
 - Provide seed script with a few prompts and versions
 
+DEPLOYMENT REQUIREMENTS (Vercel + Supabase)
+- API must run as Vercel serverless functions.
+- Provide a catch-all handler so /api/* routes work on Vercel.
+- Also support non-prefixed routes (root-mounted) to avoid Vercel path-stripping surprises.
+- CORS must be configurable via env var.
+- Prisma must be serverless-safe (singleton client).
+- For Supabase pooler (PgBouncer/transaction mode), Prisma must disable prepared statement caching:
+  - DATABASE_URL should include pgbouncer=true&statement_cache_size=0
+
 ENGINEERING QUALITY BAR
 - Type safety end-to-end (shared types where reasonable)
 - Separation of concerns: routes/controllers/services/db
@@ -111,8 +122,23 @@ DELIVERABLES
 IMPLEMENTATION DETAILS (choose sensible defaults)
 - Frontend calls backend at http://localhost:3001
 - Backend runs at http://localhost:3001, frontend at http://localhost:5173
-- Use SQLite file at apps/api/prisma/dev.db (or similar)
+- Use Postgres via Supabase (local dev can still run against Supabase)
 - Provide a dev proxy or CORS config
+
+ENV VARS
+API (.env / Vercel project env)
+- DATABASE_URL: runtime connection string (on Vercel, use Supabase pooler). If using pooler/transaction mode, include:
+  ?pgbouncer=true&statement_cache_size=0
+- DIRECT_URL: direct Postgres connection string (recommended for migrations)
+- JWT_SECRET
+- CORS_ORIGIN: comma-separated origins (e.g. http://localhost:5173,https://<your-web>.vercel.app)
+
+WEB (.env / Vercel project env)
+- VITE_API_BASE_URL: https://<your-api>.vercel.app
+
+ROUTING NOTES
+- Local dev API routes live under /api/*.
+- Vercel API should support both /api/* and root routes (e.g. POST /auth/login and GET /prompts) to avoid routing mismatches.
 
 OUTPUT FORMAT
 - Start with a concise architecture summary
