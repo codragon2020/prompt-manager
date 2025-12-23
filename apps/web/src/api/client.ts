@@ -152,12 +152,12 @@ export const api = {
           publishedAt: string;
         }>;
       }>;
-    }>(`/api/prompts${qs ? `?${qs}` : ''}`);
+    }>(`${API_PREFIX}/prompts${qs ? `?${qs}` : ''}`);
   },
 
   getPrompt: (promptId: string) =>
     request<PromptDetailResponse>(
-      `/api/prompts/${encodeURIComponent(promptId)}`,
+      `${API_PREFIX}/prompts/${encodeURIComponent(promptId)}`,
     ),
 
   createVersion: (
@@ -179,7 +179,7 @@ export const api = {
     },
   ) =>
     request<{ id: string; version: number }>(
-      `/api/prompts/${encodeURIComponent(promptId)}/versions`,
+      `${API_PREFIX}/prompts/${encodeURIComponent(promptId)}/versions`,
       {
         method: 'POST',
         body: JSON.stringify(body),
@@ -190,16 +190,21 @@ export const api = {
     promptId: string,
     body: { env: string; promptVersionId: string; notes?: string },
   ) =>
-    request<any>(`/api/prompts/${encodeURIComponent(promptId)}/publish`, {
-      method: 'POST',
-      body: JSON.stringify(body),
-    }),
+    request<any>(
+      `${API_PREFIX}/prompts/${encodeURIComponent(promptId)}/publish`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+      },
+    ),
 
   exportPrompt: (promptId: string) =>
-    request<any>(`/api/prompts/${encodeURIComponent(promptId)}/export`),
+    request<any>(
+      `${API_PREFIX}/prompts/${encodeURIComponent(promptId)}/export`,
+    ),
 
   importPrompt: (body: { bundle: any; mode?: 'create' | 'merge' }) =>
-    request<any>(`/api/prompts/import`, {
+    request<any>(`${API_PREFIX}/prompts/import`, {
       method: 'POST',
       body: JSON.stringify({ bundle: body.bundle, mode: body.mode || 'merge' }),
     }),
