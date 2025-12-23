@@ -1,6 +1,6 @@
 import express from 'express';
-import { authRouter } from './auth';
-import { promptsRouter } from './prompts';
+import { authRouter } from './auth.js';
+import { promptsRouter } from './prompts.js';
 
 export const apiRouter = express.Router();
 

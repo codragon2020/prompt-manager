@@ -1,10 +1,10 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-import { prisma } from '../db';
-import { AppError } from '../errors';
-import { signJwt } from '../auth/jwt';
-import { validateBody } from '../middleware/validate';
+import { prisma } from '../db.js';
+import { AppError } from '../errors.js';
+import { signJwt } from '../auth/jwt.js';
+import { validateBody } from '../middleware/validate.js';
 
 export const authRouter = express.Router();
 

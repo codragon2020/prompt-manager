@@ -1,6 +1,6 @@
 import type express from 'express';
 import type { ZodSchema } from 'zod';
-import { AppError } from '../errors';
+import { AppError } from '../errors.js';
 
 export function validateBody<T>(schema: ZodSchema<T>) {
   return (

@@ -5,7 +5,7 @@ import rateLimit from 'express-rate-limit';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
 import { apiRouter } from './routes/index.js';
-import { toAppError } from './errors';
+import { toAppError } from './errors.js';
 
 export function createApp() {
   const logger = pino({ level: process.env.LOG_LEVEL || 'info' });

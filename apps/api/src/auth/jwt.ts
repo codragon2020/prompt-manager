@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { AppError } from '../errors';
+import { AppError } from '../errors.js';
 
 export type JwtPayload = {
   sub: string;

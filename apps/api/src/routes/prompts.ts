@@ -1,7 +1,7 @@
 import express from 'express';
 import { z } from 'zod';
-import { requireAuth } from '../middleware/requireAuth';
-import { validateBody, validateQuery } from '../middleware/validate';
+import { requireAuth } from '../middleware/requireAuth.js';
+import { validateBody, validateQuery } from '../middleware/validate.js';
 import {
   createPrompt,
   exportPromptBundle,
@@ -13,7 +13,7 @@ import {
   softDeletePrompt,
   updatePrompt,
   createPromptVersion,
-} from '../services/prompts';
+} from '../services/prompts.js';
 
 export const promptsRouter = express.Router();
 

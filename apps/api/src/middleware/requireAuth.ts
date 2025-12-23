@@ -1,6 +1,6 @@
 import type express from 'express';
-import { AppError } from '../errors';
-import { verifyJwt } from '../auth/jwt';
+import { AppError } from '../errors.js';
+import { verifyJwt } from '../auth/jwt.js';
 
 export type AuthUser = {
   id: string;

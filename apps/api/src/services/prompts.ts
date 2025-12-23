@@ -1,7 +1,7 @@
 import { Prisma, PromptStatus, VarType } from '@prisma/client';
-import { prisma } from '../db';
-import { AppError } from '../errors';
-import type { AuthUser } from '../middleware/requireAuth';
+import { prisma } from '../db.js';
+import { AppError } from '../errors.js';
+import type { AuthUser } from '../middleware/requireAuth.js';
 
 function normalizeTagName(name: string) {
   return name.trim().toLowerCase();

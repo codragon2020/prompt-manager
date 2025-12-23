@@ -1,2 +1,2 @@
-export { createApp } from './app';
-export { prisma } from './db';
+export { createApp } from './app.js';
+export { prisma } from './db.js';
