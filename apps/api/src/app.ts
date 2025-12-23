@@ -39,6 +39,7 @@ export function createApp() {
     res.json({ ok: true });
   });
 
+  app.use(apiRouter);
   app.use('/api', apiRouter);
 
   app.use((req: express.Request, res: express.Response) => {
