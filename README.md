@@ -42,11 +42,47 @@ Web: http://localhost:5173
 
 ## API
 
-All API routes are under `/api`.
+Local dev API routes are under `/api`.
+
+On Vercel, the API is deployed as serverless functions and routes may be available both:
+
+- Under `/api/*` (catch-all function)
+- And without the `/api` prefix (root function)
+
+The web app is configured to call the non-prefixed routes in production when `VITE_API_BASE_URL` is set.
+
+### Vercel env vars (API project)
+
+- `DATABASE_URL`: Supabase pooler connection string (recommended for serverless)
+- `DIRECT_URL`: Supabase direct connection string (used for migrations)
+- `JWT_SECRET`: required for signing auth tokens
+- `CORS_ORIGIN`: comma-separated list of allowed origins, e.g. `http://localhost:5173,https://<your-web>.vercel.app`
+
+Optional:
+
+- `EXPOSE_ERROR_DETAILS`: set to `true` temporarily to debug production errors (turn off after)
+
+#### Supabase pooler + Prisma
+
+If you use the Supabase transaction pooler (PgBouncer) for `DATABASE_URL`, add these query params to avoid Prisma prepared statement errors:
+
+- `pgbouncer=true`
+- `statement_cache_size=0`
+
+Example:
+
+```text
+postgres://USER:PASSWORD@HOST:6543/dbname?pgbouncer=true&statement_cache_size=0
+```
+
+### Vercel env vars (Web project)
+
+- `VITE_API_BASE_URL`: `https://<your-api>.vercel.app`
 
 ### Auth
 
-- `POST /api/auth/login` -> `{ token }`
+- `POST /api/auth/login` -> `{ token }` (local dev)
+- `POST /auth/login` -> `{ token }` (Vercel deployment)
 
 Example:
 
@@ -65,6 +101,8 @@ curl -s \
 - `POST /api/prompts` create (auth)
 - `PATCH /api/prompts/:promptId` update (auth)
 - `DELETE /api/prompts/:promptId` soft delete (auth)
+
+On Vercel, these are typically available without the `/api` prefix as well (e.g. `GET /prompts`).
 
 Create prompt example:
 
