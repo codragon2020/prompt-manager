@@ -43,6 +43,8 @@ const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL as
   | string
   | undefined;
 
+const API_PREFIX = API_BASE_URL ? '' : '/api';
+
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
 }
@@ -87,7 +89,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   login: (params: { email: string; password: string }) =>
-    request<{ token: string }>('/api/auth/login', {
+    request<{ token: string }>(`${API_PREFIX}/auth/login`, {
       method: 'POST',
       body: JSON.stringify(params),
     }),
@@ -113,7 +115,7 @@ export const api = {
       }>;
     };
   }) =>
-    request<PromptDetailResponse>('/api/prompts', {
+    request<PromptDetailResponse>(`${API_PREFIX}/prompts`, {
       method: 'POST',
       body: JSON.stringify(body),
     }),

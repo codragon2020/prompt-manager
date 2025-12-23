@@ -26,6 +26,14 @@ authRouter.post('/login', validateBody(loginBody), async (req, res, next) => {
       });
     }
 
+    if (!user.passwordHash) {
+      throw new AppError({
+        code: 'UNAUTHORIZED',
+        status: 401,
+        message: 'Invalid credentials',
+      });
+    }
+
     const ok = await bcrypt.compare(password, user.passwordHash);
     if (!ok) {
       throw new AppError({
