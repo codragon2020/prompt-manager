@@ -8,7 +8,7 @@ You are a senior full-stack engineer. Build a complete Prompt Management System 
 GOALS
 1) CRUD prompts with strong versioning and auditability.
 2) Easy local running, reliable APIs, clean data model.
-3) Practical: search, tags, environments, and deployment-ready patterns (but local SQLite).
+3) Practical: search, tags, environments, and deployment-ready patterns (use Postgres everywhere).
 
 NOTE: Prefer deployment-ready patterns for Vercel serverless + Supabase Postgres.
 
@@ -83,7 +83,7 @@ DATA MODEL (minimum)
 - prompt_runs (optional): records of test rendering/executions (inputs/outputs, model used, latency, etc.)
 
 DATABASE
-- Provide schema migrations (Prisma migrations or SQL)
+- Provide schema migrations (Prisma migrations or Postgres migrations)
 - Provide seed script with a few prompts and versions
 
 DEPLOYMENT REQUIREMENTS (Vercel + Supabase)
